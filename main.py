@@ -4,14 +4,21 @@ from fileNames import files
 # A program to produce sentiment analysis output data on Google Play Store reviews using VADER Sentiment Analysis
 def main():
     # Give main path name for data
-    mainPath = '/Users/jaime/Documents/York_University/Winter_2021/Data_Vizualization/Project/gitlab/datasets/dataset'
+    mainPath = '/Users/jaime/Documents/York_University/Winter_2021/Data_Vizualization/Project/gitlab/datasets/Google'
 
     # Call file name function to get all file names and pathways
     readFile = files(mainPath)
 
+    # Create statistic file
+    statisticFile = open('/Users/jaime/Documents/York_University/Winter_2021/Data_Vizualization/Project/sentiment_statistics.csv', 'w', encoding='utf8')
+
+    # Add columns
+    statisticFile.write('App,App ID,Reviews,neg,neu,pos\n')
+
+
     # Call sentiment function to get csv output files for all of the applications with English reviews
     for i in range(len(readFile[0])):
-        sentiment(readFile[0][i], readFile[1][i])
+        sentiment(readFile[0][i], readFile[1][i], statisticFile)
 
 # Run Main
 if __name__ == "__main__":
