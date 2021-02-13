@@ -4,7 +4,7 @@ from fileNames import files
 # A program to produce sentiment analysis output data on Google Play Store reviews using VADER Sentiment Analysis
 def main():
     # Give main path name for data
-    mainPath = 'Data/Cleaned_reviews_set_2'
+    mainPath = '/Users/jaime/Documents/York_University/Winter_2021/Data_Vizualization/Project/gitlab/datasets/dataset'
 
     # Call file name function to get all file names and pathways
     readFile = files(mainPath)
