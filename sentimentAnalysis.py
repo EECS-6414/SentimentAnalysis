@@ -14,15 +14,17 @@ def sentiment(pathName, outputFileName, statisticFile):
     sentences = []
 
     # Create an empty array
-    reviewId = []
+    author = []
+    date = []
     appName = []
     appPath = []
 
     # Loop through the csv file to find all comments written in English
     for i in range(len(filePath)):
-        if filePath['Language'][i] == 'English':
+        if filePath['Language'][i] == 'English' and len(str(filePath['Author'][i]))>2 and 'google' not in str(filePath['Author'][i]).lower() and 'nan' != str(filePath['Author'][i]).lower():
             sentences.append(filePath['Body'][i])
-            reviewId.append(filePath['Review ID'][i])
+            author.append(filePath['Author'][i])
+            date.append(filePath['Date'][i])
 
     # Get app info
     appName.append(filePath['App'][1])
@@ -30,7 +32,7 @@ def sentiment(pathName, outputFileName, statisticFile):
 
 
     # Add column names
-    outputFile.write('Review ID,neg,neu,pos,compound, sentiment\n')
+    outputFile.write('Author, date, neg,neu,pos,compound, sentiment\n')
 
     # Initialize VADER and write the relevant scores to the output file in csv form
     analyzer = SentimentIntensityAnalyzer()
@@ -52,7 +54,8 @@ def sentiment(pathName, outputFileName, statisticFile):
             sentiment_classification = 'negative'
             negProportion += 1
 
-        outputFile.write(str(reviewId[i])+",")
+        outputFile.write(str(author[i])+",")
+        outputFile.write(str(date[i])+",")
         outputFile.write(str(sentiment_dict['neg'])+",")
         outputFile.write(str(sentiment_dict['neu'])+",")
         outputFile.write(str(sentiment_dict['pos'])+",")
@@ -67,10 +70,20 @@ def sentiment(pathName, outputFileName, statisticFile):
     statisticFile.write(str(nReviews)+",")
     statisticFile.write(str(division(negProportion, nReviews))+",")
     statisticFile.write(str(division((nReviews-negProportion-posProportion), nReviews))+",")
-    statisticFile.write(str(division(posProportion, nReviews)))
+    statisticFile.write(str(division(posProportion, nReviews))+",")
+    statisticFile.write(str(getSentiment(division(posProportion, nReviews), division(negProportion, nReviews), division((nReviews-negProportion-posProportion), nReviews))))
     statisticFile.write(",\n")
 
 
 # Division avoiding zero denominator
 def division(n, d):
     return n / d if d else 0
+
+
+def getSentiment(pos, neg, neu):
+    if pos > neg and pos > neu:
+        return 'positive'
+    elif neg > pos and neg > neu:
+        return 'negative'
+    else:
+        return 'neutral'
